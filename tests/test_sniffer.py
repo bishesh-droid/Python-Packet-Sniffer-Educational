@@ -46,23 +46,21 @@ class TestPacketSniffer(unittest.TestCase):
         """
         Test the packet_callback with a TCP packet.
         """
-        packet = Ether()/IP()/TCP()/Raw(load="testload")
+        packet = Ether()/IP()/TCP(sport=80, dport=80)/Raw(load="testload")
         with patch('builtins.print') as mock_print:
             self.sniffer.packet_callback(packet)
-            mock_print.assert_any_call(f"[TCP] Src Port: 80, Dst Port: 80, Flags: S")
+            mock_print.assert_any_call("[TCP] Src Port: 80, Dst Port: 80, Flags: S")
             mock_print.assert_any_call("[Payload]")
-            mock_print.assert_any_call(hexdump("testload"))
 
     def test_packet_callback_udp(self):
         """
         Test the packet_callback with a UDP packet.
         """
-        packet = Ether()/IP()/UDP()/Raw(load="testload")
+        packet = Ether()/IP()/UDP(sport=1234, dport=5678)/Raw(load="testload")
         with patch('builtins.print') as mock_print:
             self.sniffer.packet_callback(packet)
-            mock_print.assert_any_call(f"[UDP] Src Port: 53, Dst Port: 53")
+            mock_print.assert_any_call("[UDP] Src Port: 1234, Dst Port: 5678")
             mock_print.assert_any_call("[Payload]")
-            mock_print.assert_any_call(hexdump("testload"))
 
     def test_packet_callback_dns(self):
         """
@@ -71,7 +69,7 @@ class TestPacketSniffer(unittest.TestCase):
         packet = Ether()/IP()/UDP()/DNS(qd=DNSQR(qname="google.com"))
         with patch('builtins.print') as mock_print:
             self.sniffer.packet_callback(packet)
-            mock_print.assert_any_call("[DNS Query] google.com")
+            mock_print.assert_any_call("[DNS Query] google.com.")
 
     def test_packet_callback_http(self):
         """

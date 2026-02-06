@@ -1,10 +1,11 @@
 
 import argparse
 import sys
-from scapy.all import sniff, wrpcap
+from scapy.all import sniff, wrpcap, DNS, DNSQR
 from scapy.layers.inet import IP, TCP, UDP, ICMP
 from scapy.layers.l2 import Ether
-from utils import is_root, hexdump
+from scapy.layers.http import HTTPRequest
+from .utils import is_root, hexdump
 
 class PacketSniffer:
     """
